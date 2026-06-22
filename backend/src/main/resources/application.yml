@@ -1,0 +1,114 @@
+spring:
+  application:
+    name: folio-api
+    version: 0.1.0
+
+  # DataSource Configuration
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:folio_db}
+    username: ${DB_USER:folio}
+    password: ${DB_PASSWORD:folio_password}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 20000
+      idle-timeout: 300000
+      max-lifetime: 1200000
+
+  # JPA/Hibernate Configuration
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL14Dialect
+        format_sql: true
+        use_sql_comments: true
+        jdbc:
+          batch_size: 20
+          fetch_size: 50
+
+  # Flyway Configuration
+  flyway:
+    locations: classpath:db/migration
+    enabled: true
+    baseline-on-migrate: false
+    clean-disabled: true
+
+  # Redis Configuration
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    timeout: 2000ms
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+
+  # OpenTelemetry Configuration
+  otel:
+    sdk:
+      disabled: false
+    exporter:
+      otlp:
+        endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://otel-collector:4318}
+    traces:
+      exporter: otlp
+    metrics:
+      exporter: prometheus
+
+# Server Configuration
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /api
+  error:
+    include-message: always
+    include-stacktrace: on-param
+
+# Management Configuration (Actuator)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when-authorized
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  tracing:
+    sampling:
+      probability: 1.0
+
+# Logging Configuration
+logging:
+  level:
+    root: INFO
+    com.folio: DEBUG
+    org.springframework.web: INFO
+    org.hibernate.SQL: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+# Application Properties
+folio:
+  app:
+    name: Folio - Notes & Knowledge Management Platform
+    version: 0.1.0
+    description: Enterprise application demonstrating architecture patterns
+  security:
+    jwt:
+      secret: ${JWT_SECRET:your-secret-key-change-in-production}
+      expiration: 86400000
+  cache:
+    ttl:
+      users: 3600
+      notebooks: 1800
+      notes: 900
+      search-results: 300
