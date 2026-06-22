@@ -12,15 +12,15 @@ COPY src/ src/
 RUN mvn clean package -DskipTests
 
 # Stage 2: Runtime
-FROM eclipse-temurin:17-jre-alpine
+FROM amazoncorretto:17
 
 WORKDIR /app
 
-# Install OpenTelemetry Java Agent
-RUN apk add --no-cache curl && \
+# Install curl and download OpenTelemetry Java Agent
+RUN yum install -y curl && \
     curl -L https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar \
     -o /app/opentelemetry-javaagent.jar && \
-    apk del curl
+    yum remove -y curl && yum clean all
 
 # Copy the built JAR from builder stage
 COPY --from=builder /app/target/*.jar app.jar

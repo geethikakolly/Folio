@@ -11,7 +11,7 @@
     <packaging>jar</packaging>
 
     <name>Folio API</name>
-    <description>Enterprise Notes & Knowledge Management Platform - Backend</description>
+    <description>Enterprise Notes &amp; Knowledge Management Platform - Backend</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -67,36 +67,19 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-postgresql</artifactId>
-        </dependency>
 
-        <!-- OpenTelemetry Java SDK -->
-        <dependency>
-            <groupId>io.opentelemetry</groupId>
-            <artifactId>opentelemetry-sdk</artifactId>
-            <version>${opentelemetry.version}</version>
-        </dependency>
+        <!-- Micrometer for metrics (handles observability integration) -->
 
-        <!-- OpenTelemetry OTLP Exporter -->
-        <dependency>
-            <groupId>io.opentelemetry.exporter</groupId>
-            <artifactId>opentelemetry-exporter-otlp</artifactId>
-            <version>${opentelemetry.version}</version>
-        </dependency>
-
-        <!-- OpenTelemetry Spring Boot Starter -->
-        <dependency>
-            <groupId>io.opentelemetry.instrumentation</groupId>
-            <artifactId>opentelemetry-instrumentation-spring-boot-starter</artifactId>
-            <version>1.31.0-alpha</version>
-        </dependency>
-
-        <!-- Micrometer for Prometheus metrics -->
+        <!-- Micrometer Prometheus for metrics -->
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+
+        <!-- Micrometer Tracing for OpenTelemetry -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing-bridge-otel</artifactId>
         </dependency>
 
         <!-- Lombok (optional, for reducing boilerplate) -->
