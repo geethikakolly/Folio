@@ -49,9 +49,12 @@ All documentation is in the [docs/](docs/) folder:
 - Terraform (AWS & Azure infrastructure)
 - Jenkins (7 custom jobs for CI/CD)
 - Nginx (reverse proxy)
-- OpenTelemetry Collector (observability hub)
-- Jaeger (distributed tracing)
-- Prometheus + Grafana (metrics & dashboards)
+- **Observability Stack:**
+  - OpenTelemetry Collector (distributed tracing hub)
+  - Jaeger (distributed tracing UI)
+  - Prometheus (metrics & time-series data)
+  - Loki (log aggregation & querying)
+  - Grafana (dashboards, metrics, logs, traces visualization)
 
 ## 🚀 Getting Started
 
@@ -85,6 +88,37 @@ npm install
 ```bash
 docker-compose up
 ```
+
+All 11 services will start automatically:
+- **postgres** (5432) - Database
+- **redis** (6379) - Cache
+- **otel-collector** (4317/4318) - OpenTelemetry tracing hub
+- **jaeger** (16686) - Distributed tracing UI
+- **prometheus** (9090) - Metrics scraping
+- **loki** (3100) - Log aggregation
+- **promtail** - Log collection agent
+- **grafana** (3000) - Observability dashboards (admin/admin)
+- **backend** (8080) - Spring Boot API
+- **frontend** (5173) - React web app
+- **nginx** (80) - Reverse proxy
+
+## 🔍 Observability Stack
+
+Folio includes a complete enterprise observability setup mirroring AWS CloudWatch + X-Ray architecture:
+
+| Component | Purpose | Access |
+|-----------|---------|--------|
+| **Prometheus** | Collects and stores time-series metrics | http://localhost:9090 |
+| **Jaeger** | Visualizes distributed traces across services | http://localhost:16686 |
+| **Loki** | Aggregates and queries logs from all containers | Via Grafana |
+| **Grafana** | Unified dashboards for metrics, logs, traces | http://localhost:3000 (admin/admin) |
+| **OpenTelemetry Collector** | Routes traces to Jaeger; exports metrics to Prometheus | Internal service |
+
+**AWS Equivalents:**
+- Prometheus ≈ CloudWatch Metrics
+- Loki ≈ CloudWatch Logs
+- Jaeger ≈ AWS X-Ray
+- Grafana ≈ CloudWatch Dashboards
 
 ## 📋 Business Domain
 
