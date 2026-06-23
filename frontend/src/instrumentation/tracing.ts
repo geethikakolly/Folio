@@ -3,16 +3,14 @@
  * Initializes tracing, auto-instrumentation of fetch/XHR, and custom spans
  */
 
+import { trace, SpanStatusCode } from '@opentelemetry/api'
 import type { Span } from '@opentelemetry/api'
 import { getWebAutoInstrumentations } from '@opentelemetry/auto-instrumentations-web'
 import { registerInstrumentations } from '@opentelemetry/instrumentation'
-import { BasicTracerProvider } from '@opentelemetry/sdk-trace-web'
-import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-web'
+import { BasicTracerProvider, BatchSpanProcessor } from '@opentelemetry/sdk-trace-web'
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
 import { Resource } from '@opentelemetry/resources'
-import {
-  SemanticResourceAttributes,
-} from '@opentelemetry/semantic-conventions'
+import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions'
 
 export function initializeTracing(): void {
   const otlpExporter = new OTLPTraceExporter({
@@ -28,26 +26,17 @@ export function initializeTracing(): void {
 
   const provider = new BasicTracerProvider({ resource })
   provider.addSpanProcessor(new BatchSpanProcessor(otlpExporter))
+  provider.register() // registers as global TracerProvider so auto-instrumentations can export
 
-  // Register auto-instrumentations for web
   registerInstrumentations({
     instrumentations: [getWebAutoInstrumentations()],
   })
 }
 
-/**
- * Get the current tracer instance
- */
 export function getTracer() {
-  const { trace } = require('@opentelemetry/api')
   return trace.getTracer('folio-frontend', '0.1.0')
 }
 
-/**
- * Create a custom span for tracking operations
- * @param name - Span name
- * @param fn - Function to execute within the span
- */
 export async function withSpan<T>(
   name: string,
   fn: () => Promise<T> | T,
@@ -56,11 +45,11 @@ export async function withSpan<T>(
   return tracer.startActiveSpan(name, async (span: Span) => {
     try {
       const result = await fn()
-      span.setStatus({ code: 0 })
+      span.setStatus({ code: SpanStatusCode.OK })
       return result
     } catch (error) {
       span.recordException(error as Error)
-      span.setStatus({ code: 2 })
+      span.setStatus({ code: SpanStatusCode.ERROR })
       throw error
     } finally {
       span.end()

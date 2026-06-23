@@ -1,11 +1,23 @@
-import React from 'react'
-import { Box, Container, Typography, Grid, Card, CardContent } from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import { Box, Container, Typography, Grid, Card, CardContent, Chip } from '@mui/material'
 import { useSelector } from 'react-redux'
 import type { RootState } from '../store'
+import { withSpan } from '../instrumentation/tracing'
 
 const Dashboard: React.FC = () => {
   const { items: notes } = useSelector((state: RootState) => state.notes)
   const { items: notebooks } = useSelector((state: RootState) => state.notebooks)
+  const [apiStatus, setApiStatus] = useState<string>('checking...')
+
+  useEffect(() => {
+    withSpan('dashboard.checkApiHealth', async () => {
+      const base = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api'
+      const res = await fetch(`${base}/health`)
+      const data = await res.json()
+      setApiStatus(data.status)
+      return data
+    }).catch(() => setApiStatus('unavailable'))
+  }, [])
 
   return (
     <Container maxWidth="lg">
@@ -19,6 +31,18 @@ const Dashboard: React.FC = () => {
       </Box>
 
       <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <Card variant="outlined" sx={{ mb: 1 }}>
+            <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2, py: '12px !important' }}>
+              <Typography variant="body2" color="textSecondary">Backend API</Typography>
+              <Chip
+                label={apiStatus}
+                color={apiStatus === 'UP' ? 'success' : apiStatus === 'checking...' ? 'default' : 'error'}
+                size="small"
+              />
+            </CardContent>
+          </Card>
+        </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Card>
             <CardContent>
