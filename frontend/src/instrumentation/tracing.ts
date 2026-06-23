@@ -3,6 +3,7 @@
  * Initializes tracing, auto-instrumentation of fetch/XHR, and custom spans
  */
 
+import type { Span } from '@opentelemetry/api'
 import { getWebAutoInstrumentations } from '@opentelemetry/auto-instrumentations-web'
 import { registerInstrumentations } from '@opentelemetry/instrumentation'
 import { BasicTracerProvider } from '@opentelemetry/sdk-trace-web'
@@ -52,7 +53,7 @@ export async function withSpan<T>(
   fn: () => Promise<T> | T,
 ): Promise<T> {
   const tracer = getTracer()
-  return tracer.startActiveSpan(name, async (span) => {
+  return tracer.startActiveSpan(name, async (span: Span) => {
     try {
       const result = await fn()
       span.setStatus({ code: 0 })

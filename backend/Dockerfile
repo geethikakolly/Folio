@@ -19,8 +19,7 @@ WORKDIR /app
 # Install curl and download OpenTelemetry Java Agent
 RUN yum install -y curl && \
     curl -L https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar \
-    -o /app/opentelemetry-javaagent.jar && \
-    yum remove -y curl && yum clean all
+    -o /app/opentelemetry-javaagent.jar
 
 # Copy the built JAR from builder stage
 COPY --from=builder /app/target/*.jar app.jar

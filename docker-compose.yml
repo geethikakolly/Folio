@@ -52,13 +52,6 @@ services:
       COLLECTOR_OTLP_ENABLED: "true"
     ports:
       - "16686:16686"  # Jaeger UI
-      - "4317:4317"    # OTLP gRPC receiver
-      - "4318:4318"    # OTLP HTTP receiver
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:14269"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   # Prometheus for Metrics
   prometheus:
@@ -120,10 +113,11 @@ services:
       otel-collector:
         condition: service_started
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/api/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
 
   # Frontend Application
   frontend:

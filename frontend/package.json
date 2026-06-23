@@ -30,7 +30,11 @@
     "zod": "^3.22.0",
     "@hookform/resolvers": "^3.1.0",
     "@opentelemetry/api": "^1.5.1",
-    "@opentelemetry/sdk-web": "^1.13.0",
+    "@opentelemetry/sdk-trace-web": "^1.13.0",
+    "@opentelemetry/auto-instrumentations-web": "^0.33.0",
+    "@opentelemetry/instrumentation": "^0.39.1",
+    "@opentelemetry/resources": "^1.13.0",
+    "@opentelemetry/semantic-conventions": "^1.13.0",
     "@opentelemetry/exporter-trace-otlp-http": "^0.39.1"
   },
   "devDependencies": {
