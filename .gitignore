@@ -37,6 +37,16 @@ coverage/
 logs/
 *.log
 
+# Terraform state and local overrides
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+terraform.tfvars
+infrastructure/terraform/aws/backend-dev.hcl
+infrastructure/terraform/aws/backend-stage.hcl
+infrastructure/terraform/aws/backend-prod.hcl
+
 # IDE specific
 .project
 .classpath

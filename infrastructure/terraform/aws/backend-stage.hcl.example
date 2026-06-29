@@ -1,0 +1,4 @@
+bucket         = "folio-terraform-state-stage"
+key            = "folio/aws/stage/terraform.tfstate"
+region         = "us-east-1"
+encrypt        = true

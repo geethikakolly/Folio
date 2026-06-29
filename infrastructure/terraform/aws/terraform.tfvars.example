@@ -1,0 +1,23 @@
+aws_region  = "us-east-1"
+project_name = "folio"
+environment  = "dev"
+
+# Build and push these images before terraform apply.
+# Example ECR URI format:
+# <account-id>.dkr.ecr.<region>.amazonaws.com/folio-backend:latest
+backend_image  = "123456789012.dkr.ecr.us-east-1.amazonaws.com/folio-backend:latest"
+frontend_image = "123456789012.dkr.ecr.us-east-1.amazonaws.com/folio-frontend:latest"
+
+db_name     = "folio_db"
+db_username = "folio"
+db_password = "replace-with-strong-password"
+
+backend_desired_count  = 2
+frontend_desired_count = 2
+
+db_instance_class = "db.t4g.micro"
+redis_node_type   = "cache.t4g.micro"
+
+resource_tags = {
+  Owner = "platform-team"
+}
